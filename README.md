@@ -58,7 +58,7 @@ https://go.dev/dl/
 
 ### 2. Clone o repositório
 ```bash
-git clone https://github.com/raphaelornellas/cadastur-csv
+git clone https://github.com/rsornellas/cadastur-csv
 cd cadastur-csv
 ```
 
@@ -162,7 +162,7 @@ This tool fully automates that workflow, retrieving all data directly from the p
 1. Install Go: https://go.dev/dl/  
 2. Clone the repo:
 ```bash
-git clone https://github.com/raphaelornellas/cadastur-csv
+git clone https://github.com/rsornellas/cadastur-csv
 cd cadastur-csv
 ```
 3. Run:
