@@ -1,0 +1,40 @@
+# Build artifacts
+/bin/
+/build/
+/dist/
+/out/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+
+# Go cache
+/pkg/
+
+go.sum
+
+# Local environment
+.env
+.env.*
+
+# Vendor
+/vendor/
+
+# Logs
+*.log
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
