@@ -64,7 +64,7 @@ cd cadastur-csv
 
 ### 3. Execute o programa
 ```bash
-go run main.go
+go run ./cmd/cadastur-csv
 ```
 
 O CLI fará perguntas em português:
@@ -87,23 +87,40 @@ id,tipoPessoa,numeroCadastro,inicioVigencia,fimVigencia,website,telefone,logrado
 ## 🏗️ Estrutura do Projeto
 ```
 cadastur-csv/
-├── main.go
+├── cmd/
+│   └── cadastur-csv/
+│       └── main.go
+├── internal/
+│   ├── cadastur/
+│   │   ├── client.go
+│   │   ├── endpoints.go
+│   │   ├── models.go
+│   │   └── service.go
+│   ├── cli/
+│   │   ├── prompts.go
+│   │   └── run.go
+│   ├── csvx/
+│   │   └── writer.go
+│   └── normalize/
+│       └── normalize.go
 ├── README.md
-└── .gitignore
+├── LICENSE
+├── .gitignore
+└── go.mod
 ```
 
 ---
 
 ## 📦 Gerar Binário
 ```bash
-go build -o cadastur-csv
+go build -o cadastur-csv ./cmd/cadastur-csv
 ./cadastur-csv
 ```
 
 ---
 
 ## 📜 Licença
-MIT (recomendado adicionar arquivo LICENSE ao publicar)
+MIT - Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
@@ -111,6 +128,11 @@ MIT (recomendado adicionar arquivo LICENSE ao publicar)
 - Desenvolvido por **Raphael Ornellas**
 - Auxílio técnico com ChatGPT
 - Dados públicos fornecidos pelo Cadastur (Ministério do Turismo)
+
+---
+
+## 🔍 Palavras‑chave (SEO)
+cadastur csv, exportar cadastur, extrair dados cadastur, api cadastur, guia de turismo cadastur, como baixar dados do cadastur, prestadores de serviços turísticos, turismo brasil dados, automação cadastur, cadastur scraper, natural extremo, ferramentas para turismo, análise de dados turismo, lista de guias de turismo brasil, cadastur download, cadastur api csv, exportar guias de turismo.
 
 ---
 
@@ -167,7 +189,7 @@ cd cadastur-csv
 ```
 3. Run:
 ```bash
-go run main.go
+go run ./cmd/cadastur-csv
 ```
 
 ---

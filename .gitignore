@@ -1,40 +1,33 @@
-# Build artifacts
-/bin/
-/build/
-/dist/
-/out/
+# Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
 
-# Test binaries
+# Test binary, built with `go test -c`
 *.test
 
-# Go cache
-/pkg/
+# Output of the go coverage tool
+*.out
 
-go.sum
+# Dependency directories
+vendor/
 
-# Local environment
-.env
-.env.*
+# Go workspace file
+go.work
 
-# Vendor
-/vendor/
+# Build artifacts
+cadastur-csv
+*.csv
 
-# Logs
-*.log
-
-# macOS
-.DS_Store
-
-# Editors
-.vscode/
+# IDE
 .idea/
+.vscode/
+*.swp
+*.swo
+*~
 
-# Temporary files
-*.tmp
-*.temp
-tmp/
+# OS
+.DS_Store
+Thumbs.db
