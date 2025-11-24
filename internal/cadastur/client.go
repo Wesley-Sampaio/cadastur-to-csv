@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"time"
+	"golang.org/x/net/html/charset"
 )
 
 // Client handles HTTP requests to the Cadastur API.
@@ -36,7 +37,18 @@ func (c *Client) Get(ctx context.Context, url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	// Respect charset declared in Content-Type and convert to UTF-8 when needed.
+	reader, err := charset.NewReader(resp.Body, resp.Header.Get("Content-Type"))
+	if err != nil {
+		// If unable to create reader for the declared charset, fall back to raw body.
+		b, err2 := io.ReadAll(resp.Body)
+		if err2 != nil {
+			return nil, err2
+		}
+		return b, nil
+	}
+
+	body, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}
@@ -59,11 +71,20 @@ func (c *Client) Post(ctx context.Context, url string, payload []byte) ([]byte, 
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	// Respect charset declared in Content-Type and convert to UTF-8 when needed.
+	reader, err := charset.NewReader(resp.Body, resp.Header.Get("Content-Type"))
+	if err != nil {
+		b, err2 := io.ReadAll(resp.Body)
+		if err2 != nil {
+			return nil, err2
+		}
+		return b, nil
+	}
+
+	body, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}
 
 	return body, nil
 }
-

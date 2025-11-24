@@ -74,11 +74,11 @@ type Prestador struct {
 	NoLocalidade         string  `json:"noLocalidade"`
 	NuLocalidade         int     `json:"nuLocalidade"`
 	NuPessoa             int     `json:"nuPessoa"`
-	NatJuridEspecial     *string `json:"natJuridEspecial"`
+	// natJuridEspecial can come as string or boolean from the API; accept any to avoid unmarshal errors.
+	NatJuridEspecial     any     `json:"natJuridEspecial"`
 	Municipio            string  `json:"municipio"`
 	NuMunicipio          int     `json:"nuMunicipio"`
 	FlPossuiVeiculo      bool    `json:"flPossuiVeiculo"`
 	NuSitCadTramite      int     `json:"nuSitCadTramite"`
 	AtividadeRedeSociais *string `json:"atividadeRedeSociais"`
 }
-

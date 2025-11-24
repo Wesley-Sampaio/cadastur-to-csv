@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"golang.org/x/text/encoding/charmap"
 )
 
 // OnlyDigits returns a version of s that contains digits only.
@@ -85,3 +86,19 @@ func IntPtrToStr(v *int) string {
 	return fmt.Sprint(*v)
 }
 
+// FixMojibake attempts to fix common mojibake where UTF-8 bytes were
+// incorrectly interpreted as ISO-8859-1 (Latin1). If the string does
+// not appear garbled, it returns the original. Otherwise it decodes
+// the bytes as ISO-8859-1 into UTF-8.
+func FixMojibake(s string) string {
+	// quick heuristic: look for common mojibake markers
+	if !strings.ContainsAny(s, "ÃÂ") {
+		return s
+	}
+
+	out, err := charmap.ISO8859_1.NewDecoder().String(s)
+	if err != nil {
+		return s
+	}
+	return out
+}

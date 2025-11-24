@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"cadastur-csv/internal/cadastur"
@@ -24,17 +25,24 @@ func PromptUF(ufs []cadastur.UF) (int, error) {
 		fmt.Printf("%d - %s (%s)\n", uf.ID, uf.NoUf, uf.SgUf)
 	}
 
-	// Ask the user to choose a UF
-	var selectedUF int
+	// Ask the user to choose a UF using line-based input to avoid scanf issues
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("▶ Digite o ID da UF (padrão 24 para Santa Catarina): ")
-	n, err := fmt.Scanf("%d", &selectedUF)
-
-	if n != 1 || err != nil {
-		selectedUF = 24
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		// On read error, fall back to default
+		return 24, nil
 	}
-
-	fmt.Println("UF selecionada:", selectedUF)
-	return selectedUF, nil
+	line = strings.TrimSpace(line)
+	if line == "" {
+		return 24, nil
+	}
+	v, err := strconv.Atoi(line)
+	if err != nil {
+		return 24, nil
+	}
+	fmt.Println("UF selecionada:", v)
+	return v, nil
 }
 
 // PromptActivity displays available activities and prompts the user to select one.
@@ -48,12 +56,25 @@ func PromptActivity(activities []cadastur.Activity) (int, string, error) {
 		}
 	}
 
-	// Ask the user to choose an activity (by ID)
-	var selectedActID int
+	// Ask the user to choose an activity (by ID) using line-based input
+	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("▶ Digite o ID da atividade (padrão 29 para Guia de Turismo): ")
-	n2, err := fmt.Scanf("%d", &selectedActID)
-	if n2 != 1 || err != nil {
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		// fallback to default
+		return 29, "Guia de Turismo", nil
+	}
+	line = strings.TrimSpace(line)
+	var selectedActID int
+	if line == "" {
 		selectedActID = 29
+	} else {
+		v, err := strconv.Atoi(line)
+		if err != nil {
+			selectedActID = 29
+		} else {
+			selectedActID = v
+		}
 	}
 
 	// Map ID -> Name (fallback to 'Guia de Turismo' if not found)
@@ -86,4 +107,3 @@ func PromptCity() (string, error) {
 
 	return localidadesUfs, nil
 }
-

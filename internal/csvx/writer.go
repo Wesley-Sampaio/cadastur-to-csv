@@ -22,6 +22,13 @@ func NewWriter(filename string) (*Writer, error) {
 		return nil, err
 	}
 
+	// Write UTF-8 BOM so Excel on Windows detects UTF-8 encoding when opening the CSV.
+	// This helps avoid mojibake like "Ã¡" when users open the CSV by double-clicking in Explorer.
+	if _, err := f.Write([]byte{0xEF, 0xBB, 0xBF}); err != nil {
+		f.Close()
+		return nil, err
+	}
+
 	w := csv.NewWriter(f)
 
 	return &Writer{
@@ -60,28 +67,28 @@ func (w *Writer) WriteRow(p cadastur.Prestador) error {
 		normalize.MsToDate(p.DtFimVigencia),
 		normalize.EmptyIfNil(p.NoWebSite),
 		normalize.OnlyDigits(p.NuTelefone),
-		p.NoLogradouro,
-		p.Complemento,
+		normalize.FixMojibake(p.NoLogradouro),
+		normalize.FixMojibake(p.Complemento),
 		normalize.OnlyDigits(p.NuCep),
 		p.Sguf,
-		p.NoBairro,
-		p.NomePrestador,
+		normalize.FixMojibake(p.NoBairro),
+		normalize.FixMojibake(p.NomePrestador),
 		p.RegistroRf,
 		fmt.Sprint(p.NuAtividadeTuristica),
-		p.Atividade,
+		normalize.FixMojibake(p.Atividade),
 		fmt.Sprint(p.NuSituacaoCadastral),
-		p.Situacao,
+		normalize.FixMojibake(p.Situacao),
 		fmt.Sprint(p.NuUf),
 		normalize.IntPtrToStr(p.LocalidadeNuUf),
-		p.Municipio,
-		p.Localidade,
-		p.NoLocalidade,
+		normalize.FixMojibake(p.Municipio),
+		normalize.FixMojibake(p.Localidade),
+		normalize.FixMojibake(p.NoLocalidade),
 		fmt.Sprint(p.NuLocalidade),
 		fmt.Sprint(p.NuMunicipio),
 		fmt.Sprint(p.NuPessoa),
 		normalize.BoolToStr(p.FlPossuiVeiculo),
 		fmt.Sprint(p.NuSitCadTramite),
-		normalize.EmptyIfNil(p.AtividadeRedeSociais),
+		normalize.FixMojibake(normalize.EmptyIfNil(p.AtividadeRedeSociais)),
 	}
 	return w.writer.Write(row)
 }
@@ -96,4 +103,3 @@ func (w *Writer) Flush() error {
 func (w *Writer) Close() error {
 	return w.file.Close()
 }
-
