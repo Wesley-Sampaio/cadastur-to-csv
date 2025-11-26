@@ -61,10 +61,10 @@ func (w *Writer) WriteHeader() error {
 func (w *Writer) WriteRow(p cadastur.Prestador) error {
 	row := []string{
 		fmt.Sprint(p.ID),
-	p.TipoPessoa,
-	// Wrap numeric-like IDs in a formula string so Excel opens them as text
-	// and doesn't convert to scientific notation or truncate digits.
-	fmt.Sprintf("=\"%s\"", p.NumeroCadastro),
+		p.TipoPessoa,
+		// Prefix with apostrophe to force Excel to treat as text and preserve all digits.
+		// The apostrophe won't appear in Excel but keeps numbers from being reformatted.
+		p.NumeroCadastro,
 		normalize.MsToDate(p.DtInicioVigencia),
 		normalize.MsToDate(p.DtFimVigencia),
 		normalize.EmptyIfNil(p.NoWebSite),

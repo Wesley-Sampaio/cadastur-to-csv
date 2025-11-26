@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
+
 	"golang.org/x/text/encoding/charmap"
 )
 
@@ -91,14 +93,48 @@ func IntPtrToStr(v *int) string {
 // not appear garbled, it returns the original. Otherwise it decodes
 // the bytes as ISO-8859-1 into UTF-8.
 func FixMojibake(s string) string {
-	// quick heuristic: look for common mojibake markers
-	if !strings.ContainsAny(s, "ÃÂ") {
+	if s == "" {
 		return s
 	}
 
-	out, err := charmap.ISO8859_1.NewDecoder().String(s)
-	if err != nil {
+	// If string looks fine (valid UTF-8 and doesn't contain common mojibake markers), return early.
+	if utf8.ValidString(s) && !strings.ContainsAny(s, "ÃÂÃ") && !strings.Contains(s, "Ã") && !strings.Contains(s, "Â") {
 		return s
 	}
-	return out
+
+	// Helper: score how many likely-correct accented chars exist
+	score := func(str string) int {
+		c := 0
+		for _, r := range str {
+			if r >= 0x80 && unicode.IsLetter(r) {
+				c++
+			}
+		}
+		return c
+	}
+
+	best := s
+	bestScore := score(s)
+
+	// Try Windows-1252
+	if b, err := charmap.Windows1252.NewDecoder().Bytes([]byte(s)); err == nil {
+		cand := string(b)
+		sc := score(cand)
+		if sc > bestScore {
+			best = cand
+			bestScore = sc
+		}
+	}
+
+	// Try ISO-8859-1
+	if b, err := charmap.ISO8859_1.NewDecoder().Bytes([]byte(s)); err == nil {
+		cand := string(b)
+		sc := score(cand)
+		if sc > bestScore {
+			best = cand
+			bestScore = sc
+		}
+	}
+
+	return best
 }
